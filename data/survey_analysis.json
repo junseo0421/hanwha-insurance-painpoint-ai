@@ -1,0 +1,262 @@
+{
+  "method": "TF-IDF(word+char n-grams) + KMeans + 세부 키워드 라벨링",
+  "n_rows": 1000,
+  "n_clusters": 8,
+  "random_state": 42,
+  "label_taxonomy": {
+    "정보 이해": [
+      "전문용어 이해",
+      "보장 범위 이해"
+    ],
+    "상품 비교": [
+      "상품 보장 비교",
+      "보험료 비교"
+    ],
+    "주의사항": [
+      "보장 제외 조건",
+      "갱신 조건"
+    ],
+    "상담": [
+      "상담 질문 준비",
+      "상담 정보 전달"
+    ]
+  },
+  "clusters": [
+    {
+      "cluster_id": 1,
+      "label": "갱신 조건",
+      "parent_label": "주의사항",
+      "label_confidence": 0.5325,
+      "count": 231,
+      "ratio": 0.231,
+      "avg_severity": 3.97,
+      "top_terms": [
+        "어렵다",
+        "찾기",
+        "찾기 어렵다",
+        "갱신",
+        "변동",
+        "변동 조건을",
+        "보험료",
+        "주기와"
+      ],
+      "representative_complaints": [
+        "보장되지 않는 조건이 설명서 뒤쪽에 있어 찾기 어렵다.",
+        "갱신 주기와 보험료 변동 조건을 찾기 어렵다.",
+        "갱신형 상품의 장기 비용을 예측하기 어렵다."
+      ],
+      "keyword_label_distribution": {
+        "갱신 조건": 123,
+        "보장 범위 이해": 41,
+        "보장 제외 조건": 37,
+        "상품 보장 비교": 30
+      },
+      "synthetic_reference_label": "갱신 조건"
+    },
+    {
+      "cluster_id": 5,
+      "label": "상담 질문 준비",
+      "parent_label": "상담",
+      "label_confidence": 0.2009,
+      "count": 229,
+      "ratio": 0.229,
+      "avg_severity": 3.73,
+      "top_terms": [
+        "모르겠다",
+        "상담",
+        "상담 전에",
+        "전에",
+        "할지 모르겠다",
+        "물어봐야 할지",
+        "물어봐야",
+        "무엇을 물어봐야"
+      ],
+      "representative_complaints": [
+        "암 진단을 받으면 실제로 얼마를 받는지 모르겠다.",
+        "암 진단을 받으면 실제로 얼마를 받는지 모르겠다.",
+        "상담 전에 무엇을 물어봐야 할지 모르겠다."
+      ],
+      "keyword_label_distribution": {
+        "상담 질문 준비": 46,
+        "보장 범위 이해": 43,
+        "보험료 비교": 43,
+        "전문용어 이해": 35
+      },
+      "synthetic_reference_label": "상담 질문 준비"
+    },
+    {
+      "cluster_id": 0,
+      "label": "전문용어 이해",
+      "parent_label": "정보 이해",
+      "label_confidence": 0.365,
+      "count": 137,
+      "ratio": 0.137,
+      "avg_severity": 4.09,
+      "top_terms": [
+        "좋겠다",
+        "있으면",
+        "설명해",
+        "설명해 줬으면",
+        "쉽게",
+        "비갱신형 같은",
+        "비갱신형",
+        "쉽게 설명해"
+      ],
+      "representative_complaints": [
+        "월 납입액과 보장 수준을 함께 비교할 수 있으면 좋겠다.",
+        "기존 질환이 있으면 어떤 보장이 제외되는지 불안하다.",
+        "갱신형과 비갱신형 같은 전문용어를 쉽게 설명해 줬으면 좋겠다."
+      ],
+      "keyword_label_distribution": {
+        "전문용어 이해": 50,
+        "보험료 비교": 44,
+        "보장 제외 조건": 43
+      },
+      "synthetic_reference_label": "전문용어 이해"
+    },
+    {
+      "cluster_id": 3,
+      "label": "상담 질문 준비",
+      "parent_label": "상담",
+      "label_confidence": 0.4308,
+      "count": 130,
+      "ratio": 0.13,
+      "avg_severity": 3.23,
+      "top_terms": [
+        "맞는",
+        "맞는 상담",
+        "준비하고",
+        "질문을 미리",
+        "질문을",
+        "준비하고 싶다",
+        "상황에 맞는",
+        "상황에"
+      ],
+      "representative_complaints": [
+        "내 상황에 맞는 상담 질문을 미리 준비하고 싶다.",
+        "내 상황에 맞는 상담 질문을 미리 준비하고 싶다.",
+        "상담사에게 내 보험 상황을 매번 처음부터 설명해야 한다."
+      ],
+      "keyword_label_distribution": {
+        "상담 질문 준비": 56,
+        "보험료 비교": 43,
+        "상담 정보 전달": 31
+      },
+      "synthetic_reference_label": "상담 질문 준비"
+    },
+    {
+      "cluster_id": 4,
+      "label": "보장 범위 이해",
+      "parent_label": "정보 이해",
+      "label_confidence": 0.4322,
+      "count": 118,
+      "ratio": 0.118,
+      "avg_severity": 3.75,
+      "top_terms": [
+        "내용을",
+        "보고 싶다",
+        "보고",
+        "중심의",
+        "중심의 쉬운",
+        "설명으로 보고",
+        "내용을 사례",
+        "보장 내용을"
+      ],
+      "representative_complaints": [
+        "약관의 전문 표현을 일상적인 말로 바꿔서 보고 싶다.",
+        "약관의 전문 표현을 일상적인 말로 바꿔서 보고 싶다.",
+        "보장 내용을 사례 중심의 쉬운 설명으로 보고 싶다."
+      ],
+      "keyword_label_distribution": {
+        "보장 범위 이해": 51,
+        "전문용어 이해": 36,
+        "상담 정보 전달": 31
+      },
+      "synthetic_reference_label": "보장 범위 이해"
+    },
+    {
+      "cluster_id": 2,
+      "label": "상품 보장 비교",
+      "parent_label": "상품 비교",
+      "label_confidence": 1.0,
+      "count": 52,
+      "ratio": 0.052,
+      "avg_severity": 3.96,
+      "top_terms": [
+        "나란히",
+        "상품별 보장",
+        "보장 항목과",
+        "조건을 나란히",
+        "항목과 지급",
+        "지급",
+        "지급 조건을",
+        "상품별"
+      ],
+      "representative_complaints": [
+        "상품별 보장 항목과 지급 조건을 나란히 보고 싶다.",
+        "상품별 보장 항목과 지급 조건을 나란히 보고 싶다.",
+        "상품별 보장 항목과 지급 조건을 나란히 보고 싶다."
+      ],
+      "keyword_label_distribution": {
+        "상품 보장 비교": 52
+      },
+      "synthetic_reference_label": "상품 보장 비교"
+    },
+    {
+      "cluster_id": 7,
+      "label": "보장 제외 조건",
+      "parent_label": "주의사항",
+      "label_confidence": 1.0,
+      "count": 52,
+      "ratio": 0.052,
+      "avg_severity": 4.06,
+      "top_terms": [
+        "항목을",
+        "항목을 먼저",
+        "면책기간과",
+        "확인하고",
+        "확인하고 싶다",
+        "면책기간과 보장",
+        "제외",
+        "먼저"
+      ],
+      "representative_complaints": [
+        "면책기간과 보장 제외 항목을 먼저 확인하고 싶다.",
+        "면책기간과 보장 제외 항목을 먼저 확인하고 싶다.",
+        "면책기간과 보장 제외 항목을 먼저 확인하고 싶다."
+      ],
+      "keyword_label_distribution": {
+        "보장 제외 조건": 52
+      },
+      "synthetic_reference_label": "보장 제외 조건"
+    },
+    {
+      "cluster_id": 6,
+      "label": "상담 질문 준비",
+      "parent_label": "상담",
+      "label_confidence": 1.0,
+      "count": 51,
+      "ratio": 0.051,
+      "avg_severity": 3.1,
+      "top_terms": [
+        "질문",
+        "고르기",
+        "질문 목록이",
+        "확인할",
+        "목록이 필요하다",
+        "상품을",
+        "상품을 고르기",
+        "필요하다"
+      ],
+      "representative_complaints": [
+        "상품을 고르기 전에 확인할 질문 목록이 필요하다.",
+        "상품을 고르기 전에 확인할 질문 목록이 필요하다.",
+        "상품을 고르기 전에 확인할 질문 목록이 필요하다."
+      ],
+      "keyword_label_distribution": {
+        "상담 질문 준비": 51
+      },
+      "synthetic_reference_label": "상담 질문 준비"
+    }
+  ]
+}
