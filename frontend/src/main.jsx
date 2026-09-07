@@ -26,6 +26,34 @@ function SectionHeading({ kicker, title, description, action }) {
 
 function LoadingLine({ children }) { return <div className="loading-line" role="status" aria-live="polite"><span className="loading-dot" />{children}</div> }
 
+function inlineMarkdown(value, keyPrefix = 'inline') {
+  const parts = String(value || '').split(/(`[^`]+`|\*\*[^*]+\*\*|__[^_]+__)/g)
+  return parts.map((part, index) => {
+    if (!part) return null
+    if (part.startsWith('**') && part.endsWith('**')) return <strong key={`${keyPrefix}-bold-${index}`}>{part.slice(2, -2)}</strong>
+    if (part.startsWith('__') && part.endsWith('__')) return <strong key={`${keyPrefix}-bold-${index}`}>{part.slice(2, -2)}</strong>
+    if (part.startsWith('`') && part.endsWith('`')) return <code key={`${keyPrefix}-code-${index}`}>{part.slice(1, -1)}</code>
+    return <span key={`${keyPrefix}-text-${index}`}>{part}</span>
+  })
+}
+
+function MarkdownAnswer({ text }) {
+  const lines = String(text || '').replace(/\r\n?/g, '\n').split('\n')
+  return <div className="answer-text">{lines.map((line, index) => {
+    const trimmed = line.trim()
+    if (!trimmed) return <div className="answer-spacer" key={`space-${index}`} aria-hidden="true" />
+    if (/^---+$/.test(trimmed)) return <hr key={`rule-${index}`} />
+    const heading = trimmed.match(/^#{1,6}\s+(.+)$/)
+    if (heading) return <h4 key={`heading-${index}`}>{inlineMarkdown(heading[1], `heading-${index}`)}</h4>
+    const bullet = line.match(/^(\s*)[*+-]\s+(.+)$/)
+    if (bullet) {
+      const indent = Math.min(3, Math.floor(bullet[1].length / 2))
+      return <p className="answer-bullet" style={{ marginLeft: `${indent * 16}px` }} key={`bullet-${index}`}><span aria-hidden="true">•</span>{inlineMarkdown(bullet[2], `bullet-${index}`)}</p>
+    }
+    return <p key={`paragraph-${index}`}>{inlineMarkdown(trimmed, `paragraph-${index}`)}</p>
+  })}</div>
+}
+
 function ProductCard({ product }) {
   const score = Number(product._match_score || 0)
   const reasons = product._ai_reasons?.length ? product._ai_reasons : product._match_reasons || []
@@ -76,7 +104,7 @@ function App() {
     </form></aside><div className="content-column">{error && <div className="error" role="alert"><strong>잠시 확인이 필요해요</strong><span>{error}</span></div>}
       <section className="section" id="products"><SectionHeading kicker="PROFILE & PRODUCTS" title="고객 유형 및 상품 안내" description={result ? '입력하신 조건을 기준으로 먼저 살펴볼 상품입니다.' : '고객 상황을 입력하면 나에게 맞는 상품을 확인할 수 있습니다.'} action={result && <span className="customer-pill">{result.customer_type}</span>} />{!result ? <div className="empty-state"><p>왼쪽에서 고객 상황을 입력하고 상품을 확인해 보세요.</p></div> : <><p className="result-mode">{result.recommendation_mode}</p><div className="product-grid">{topProducts.map((product) => <ProductCard key={product.product_id} product={product} />)}</div></>}</section>
       <section className="section" id="compare"><SectionHeading kicker="COMPARE" title="상품 비교" description="추천도 순으로 정렬했습니다. 다른 상품을 추가해 함께 비교할 수 있습니다." />{!result ? <div className="empty-state"><p>상품 안내를 확인한 뒤 비교할 수 있습니다.</p></div> : <><div className="compare-options">{extraProducts.map((product) => <label key={product.product_id}><input type="checkbox" checked={compareIds.includes(product.product_id)} onChange={() => setCompareIds((ids) => ids.includes(product.product_id) ? ids.filter((id) => id !== product.product_id) : [...ids, product.product_id])} />{product.name}</label>)}</div><div className="table-scroll"><table><thead><tr><th>비교 항목</th>{comparisonProducts.map((product) => <th key={product.product_id}>{product.name}<small>추천도 {product._match_score || 0}점</small></th>)}</tr></thead><tbody>{comparisonRows.map(([label, ...values]) => <tr key={label}><th>{label}</th>{values.map((value, index) => <td key={index}>{value}</td>)}</tr>)}</tbody></table></div></>}</section>
-      <section className="section" id="conversation"><SectionHeading kicker="CONVERSATION" title="상담 전 질문 추천 및 AI 설명" description="궁금한 점을 정리해 상담 전에 확인해 보세요." />{!result ? <div className="empty-state"><p>상품 안내를 확인하면 상담 질문을 추천받을 수 있습니다.</p></div> : <><div className="question-toolbar"><button className="secondary" onClick={generateQuestions} disabled={loading === 'questions'}>{loading === 'questions' ? '질문을 정리하는 중…' : '상담 질문 추천받기'}</button><span className="result-mode">{questionMode}</span></div>{questions.length > 0 && <div className="question-list">{questions.map((question) => <button key={question} className={selectedQuestion === question ? 'question selected' : 'question'} onClick={() => setSelectedQuestion(question)}>{question}</button>)}</div>}<div className="ask-row"><input value={selectedQuestion} onChange={(e) => setSelectedQuestion(e.target.value)} placeholder="궁금한 내용을 직접 입력하세요." /><button className="primary ask-button" onClick={askQuestion} disabled={loading === 'answer' || !selectedQuestion.trim()}>{loading === 'answer' ? '답변을 준비하는 중…' : '답변 확인하기'}</button></div>{answer && <div className="answer-box"><p className="answer-meta">{answer.intent}<span>{answer.mode}</span></p><div className="answer-text">{answer.response}</div><div className="feedback-row"><input value={feedback} onChange={(e) => setFeedback(e.target.value)} placeholder="답변에서 더 알고 싶은 점을 적어 주세요." /><button onClick={sendFeedback} disabled={loading === 'feedback' || !feedback.trim()}>{loading === 'feedback' ? '다시 작성 중…' : '답변 다듬기'}</button></div></div>}</>}</section>
+      <section className="section" id="conversation"><SectionHeading kicker="CONVERSATION" title="상담 전 질문 추천 및 AI 설명" description="궁금한 점을 정리해 상담 전에 확인해 보세요." />{!result ? <div className="empty-state"><p>상품 안내를 확인하면 상담 질문을 추천받을 수 있습니다.</p></div> : <><div className="question-toolbar"><button className="secondary" onClick={generateQuestions} disabled={loading === 'questions'}>{loading === 'questions' ? '질문을 정리하는 중…' : '상담 질문 추천받기'}</button><span className="result-mode">{questionMode}</span></div>{questions.length > 0 && <div className="question-list">{questions.map((question) => <button key={question} className={selectedQuestion === question ? 'question selected' : 'question'} onClick={() => setSelectedQuestion(question)}>{question}</button>)}</div>}<div className="ask-row"><input value={selectedQuestion} onChange={(e) => setSelectedQuestion(e.target.value)} placeholder="궁금한 내용을 직접 입력하세요." /><button className="primary ask-button" onClick={askQuestion} disabled={loading === 'answer' || !selectedQuestion.trim()}>{loading === 'answer' ? '답변을 준비하는 중…' : '답변 확인하기'}</button></div>{answer && <div className="answer-box"><p className="answer-meta">{answer.intent}<span>{answer.mode}</span></p><MarkdownAnswer text={answer.response} /><div className="feedback-row"><input value={feedback} onChange={(e) => setFeedback(e.target.value)} placeholder="답변에서 더 알고 싶은 점을 적어 주세요." /><button onClick={sendFeedback} disabled={loading === 'feedback' || !feedback.trim()}>{loading === 'feedback' ? '다시 작성 중…' : '답변 다듬기'}</button></div></div>}</>}</section>
       <section className="section" id="insights"><SectionHeading kicker="CUSTOMER INSIGHT" title="설문 기반 고객 불편 분석" description="고객 의견에서 자주 나타난 불편을 서비스 개선의 기준으로 삼았습니다." /><SurveyInsights survey={survey} onLoad={loadSurvey} loading={loading === 'survey'} /></section>
     </div></div><footer><span>한화생명 Easy Guide</span><p>본 서비스는 보험상품 이해를 돕는 안내용 프로토타입입니다. 정확한 보장 내용은 공식 상품 설명서와 전문 상담을 통해 확인해 주세요.</p></footer></main></>
 }
